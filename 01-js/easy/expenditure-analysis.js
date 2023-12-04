@@ -10,7 +10,7 @@
 // }
 
 // module.exports = calculateTotalSpentByCategory;
-
+// making some changes here
 const transaction = [{
   itemName : 'milk', 
   category : 'grocery', 
