@@ -5,8 +5,11 @@
   Once you've implemented the logic, test your code by running
 */
 
+
 function countVowels(str) {
-    // Your code here
+  const vowelRegex = /[aeiou]/gi;
+  const count = str.match(vowelRegex);
+  return count ? count.length : 0;
 }
 
 module.exports = countVowels;
