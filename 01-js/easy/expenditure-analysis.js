@@ -10,7 +10,8 @@
 // }
 
 // module.exports = calculateTotalSpentByCategory;
-// making some changes here
+// making some changes here 
+// making changes in the master branch but not in local 
 const transaction = [{
   itemName : 'milk', 
   category : 'grocery', 
