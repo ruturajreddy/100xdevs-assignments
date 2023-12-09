@@ -11,7 +11,7 @@
 
 // module.exports = calculateTotalSpentByCategory;
 // making some changes here 
-// deleted something here now need to update in the master branch 
+// deleted something here now need to update in the master branch
 const transaction = [{
   itemName : 'milk', 
   category : 'grocery', 
