@@ -5,10 +5,37 @@
  * Compare it with the results from 3-promise-all.js
  */
 
-function waitOneSecond() {}
+function wait1(t1) {
+  return new Promise(function (resolve) {
+    setTimeout(() => resolve(), t1 * 1000);
+  });
+}
 
-function waitTwoSecond() {}
+function wait2(t2) {
+  return new Promise(function (resolve) {
+    setTimeout(() => resolve(), t2 * 1000);
+  });
+}
 
-function waitThreeSecond() {}
+function wait3(t3) {
+  return new Promise(function (resolve) {
+    setTimeout(() => resolve(), t3 * 1000);
+  });
+}
 
-function calculateTime() {}
+async function calculateTime(t1, t2, t3) {
+  const promises = [wait1(t1), wait2(t2), wait3(t3)];
+  const time = Date.now();
+
+  // Use Promise.all to wait for all promises to resolve
+  await wait1(t1);
+  await wait2(t2);
+  await wait3(t3);
+
+  // Calculate the total time inside the then block
+  const totalTime = Date.now() - time;
+
+  return totalTime;
+}
+
+module.exports = calculateTime;
