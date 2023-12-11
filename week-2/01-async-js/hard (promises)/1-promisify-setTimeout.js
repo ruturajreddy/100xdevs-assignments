@@ -3,6 +3,10 @@
     where n is passed as an argument to the function.
 */
 
-function wait(n) {}
+function wait(n) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(`resolved in ${n} seconds`), n * 1000);
+  });
+}
 
 module.exports = wait;
