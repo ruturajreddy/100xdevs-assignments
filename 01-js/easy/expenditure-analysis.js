@@ -13,35 +13,25 @@
   Output - [{ category: 'Food', totalSpent: 10 }] // Can have multiple categories, only one example is mentioned here
 */
 
-// function calculateTotalSpentByCategory(transactions) {
-//   return [{category : transactions['category'], amountspent : transactions['price']}];
-// }
+const calculateTotalSpentByCategory = (transactions) => {
+  const categoryTotal = {};
 
-// module.exports = calculateTotalSpentByCategory;
-// making some changes here 
-// deleted something here now need to update in the master branch
-const transaction = [{
-  itemName : 'milk', 
-  category : 'grocery', 
-  price : 1000, 
-  timestamp : 'today'
-}, {
-  itemName : 'bread', 
-  category : 'grocery', 
-  price : 1000, 
-  timestamp : 'today'
-}, {
-  itemName : 'clothes', 
-  category : 'wearables', 
-  price : 1000, 
-  timestamp : 'today'
-}
-]
+  transactions.forEach((transactions) => {
+    const { category, price } = transactions;
 
-// function calTotalAmt(transaction) {
-//   return transaction['itemName'];
-// }
+    if (!categoryTotal[category]) {
+      categoryTotal[category] = 0;
+    }
+    categoryTotal[category] += price;
+  });
 
-// console.log(calTotalAmt(transaction));
+  const result = Object.entries(categoryTotal).map(
+    ([category, totalSpent]) => ({
+      category,
+      totalSpent,
+    })
+  );
+  return result;
+};
 
-console.log(transaction[0]['category']);
+module.exports = calculateTotalSpentByCategory;
