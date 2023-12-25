@@ -25,7 +25,7 @@ const checkValidCred = (username, password) => {
 function signJwt(username, password) {
   // Your code here
   if (checkValidCred(username, password).success) {
-    return jwt.sign({ username, password }, "secretKey");
+    return jwt.sign({ username, password }, jwtPassword);
   } else {
     return null;
   }
