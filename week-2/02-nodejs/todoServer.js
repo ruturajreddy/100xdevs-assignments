@@ -45,95 +45,96 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 
+const path = require("path");
 const app = express();
+
+const filePath = path.join(__dirname, "todos.json");
 
 app.use(bodyParser.json());
 
-// /todos - Retrieve all todo items
 app.get("/todos", (req, res) => {
-  fs.readFile("todos.json", "utf-8", (err, data) => {
+  fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) throw err;
-    res.json(JSON.parse(data));
+    res.status(200).json(JSON.parse(data));
   });
 });
 
-// /todos/:id - Retrieve a specific todo item by ID
 app.get("/todos/:id", (req, res) => {
-  fs.readFile("todos.json", "utf-8", (err, data) => {
+  fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) throw err;
     const todos = JSON.parse(data);
-    const indexToFind = todos.findIndex(
+    const todoToFind = todos.find(
       (item) => item.id === parseInt(req.params.id)
     );
-    if (indexToFind === -1) {
-      res.status(404).send();
-    } else {
-      res.json(todos[indexToFind]);
-    }
+    todoToFind
+      ? res.status(200).json(todoToFind)
+      : res.status(404).send("not found");
   });
 });
 
-// /todos - Create a new todo item
 app.post("/todos", (req, res) => {
-  const updatedTodo = {
-    id: Math.floor(Math.random() * 1000000),
-    title: req.body.title,
-    completed: req.body.completed,
-    description: req.body.description,
-  };
-  fs.readFile("todos.json", "utf-8", (err, data) => {
+  fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) throw err;
-    const todos = JSON.parse(data);
-    todos.push(updatedTodo);
-    fs.writeFile("todos.json", JSON.stringify(todos), (err) => {
+    const updatedTodo = JSON.parse(data);
+    const newTodo = {
+      id: updatedTodo.length + 1,
+      title: req.body.title,
+      description: req.body.description,
+    };
+    updatedTodo.push(newTodo);
+    fs.writeFile(filePath, JSON.stringify(updatedTodo), "utf-8", (err) => {
       if (err) throw err;
-      res.status(201).json(updatedTodo);
+      res.status(201).json({ id: newTodo.id });
     });
   });
 });
 
 app.put("/todos/:id", (req, res) => {
-  fs.readFile("todos.json", "utf-8", (err, data) => {
+  fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) throw err;
-    const todos = JSON.parse(data);
-    const indexToUpdate = todos.findIndex(
+    const todo = JSON.parse(data);
+    const todoToUpdate = todo.findIndex(
       (item) => item.id === parseInt(req.params.id)
     );
-    if (indexToUpdate === -1) {
-      res.status(404).send();
+    if (todoToUpdate === -1) {
+      res.status(404).send("not found");
     } else {
-      todos[indexToUpdate].title = req.body.title;
-      todos[indexToUpdate].completed = req.body.completed;
-      todos[indexToUpdate].description = req.body.description;
-      fs.writeFile("todos.json", JSON.stringify(todos), (err) => {
+      if (req.body.title) {
+        todo[todoToUpdate].title = req.body.title;
+      }
+      if (req.body.description) {
+        todo[todoToUpdate].description = req.body.description;
+      }
+      if (req.body.completed) {
+        todo[todoToUpdate].completed = req.body.completed;
+      }
+      fs.writeFile(filePath, JSON.stringify(todo), "utf-8", (err) => {
         if (err) throw err;
-        res.status(200).send();
+        res.status(200).send("updated");
       });
     }
   });
 });
 
 app.delete("/todos/:id", (req, res) => {
-  fs.readFile("todos.json", "utf-8", (err, data) => {
+  fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) throw err;
-    const todos = JSON.parse(data);
-    const indexToDelete = todos.findIndex(
+    const todo = JSON.parse(data);
+    const todoToDelete = todo.findIndex(
       (item) => item.id === parseInt(req.params.id)
     );
-    if (indexToDelete === -1) {
-      res.status(404).send();
-    } else {
-      todos.splice(indexToDelete, 1);
-      fs.writeFile("todos.json", JSON.stringify(todos), (err) => {
-        if (err) throw err;
-        res.status(200).send();
-      });
+    if (todoToDelete === -1) {
+      res.status(404).send("not found");
     }
+    const updatedTodo = todo.filter(
+      (item) => item.id !== parseInt(req.params.id)
+    );
+    fs.writeFile(filePath, JSON.stringify(updatedTodo), "utf-8", (err) => {
+      if (err) throw err;
+      res.status(200).send("deleted");
+    });
   });
 });
 
-app.use((res, req, next) => {
-  res.status(404).send();
-});
-
 module.exports = app;
+
