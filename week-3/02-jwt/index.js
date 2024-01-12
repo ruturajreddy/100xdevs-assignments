@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const jwtPassword = "secret";
+
 const z = require("zod");
 
 /**
@@ -13,6 +14,7 @@ const z = require("zod");
  *                        Returns null if the username is not a valid email or
  *                        the password does not meet the length requirement.
  */
+
 const checkValidCred = (username, password) => {
   const schema = z.object({
     username: z.string().email(),
@@ -24,11 +26,9 @@ const checkValidCred = (username, password) => {
 
 function signJwt(username, password) {
   // Your code here
-  if (checkValidCred(username, password).success) {
-    return jwt.sign({ username, password }, jwtPassword);
-  } else {
-    return null;
-  }
+  return checkValidCred(username, password).success
+    ? jwt.sign({ username, password }, jwtPassword)
+    : null;
 }
 
 /**
@@ -42,10 +42,8 @@ function signJwt(username, password) {
 function verifyJwt(token) {
   // Your code here
   try {
-    jwt.verify(token, jwtPassword);
-    return true;
-    // return a list of users other than this username
-  } catch (err) {
+    return jwt.verify(token, jwtPassword) ? true : false;
+  } catch (error) {
     return false;
   }
 }
@@ -58,9 +56,10 @@ function verifyJwt(token) {
  *                         Returns false if the token is not a valid JWT format.
  */
 function decodeJwt(token) {
+  // Your code here
   try {
     return jwt.decode(token) ? true : false;
-  } catch (err) {
+  } catch (error) {
     return false;
   }
 }
